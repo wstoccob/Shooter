@@ -1,2 +1,2 @@
-﻿using var game = new chapter_04.Game1();
+﻿using var game = new chapter_04.MainGame();
 game.Run();
