@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using chapter_04.Enum;
+using chapter_04.Objects.Base;
+using chapter_04.States;
+using chapter_04.States.Base;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -6,28 +10,42 @@ namespace chapter_04;
 
 public class MainGame : Game
 {
+    private BaseGameState _currentGameState;
+    
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
 
     private RenderTarget2D _renderTarget;
     private Rectangle _renderScaleRectangle;
-    private const int DESIGNED_RESOLUTION_WIDTH = 1024;
-    private const int DESIGNED_RESOLUTION_HEIGHT = 768;
+    private const int DESIGNED_RESOLUTION_WIDTH = 640;
+    private const int DESIGNED_RESOLUTION_HEIGHT = 480;
     private const float DESIGNED_RESOLUTION_ASPECT_RATIO = DESIGNED_RESOLUTION_WIDTH / (float)DESIGNED_RESOLUTION_HEIGHT;
 
     public MainGame()
     {
         graphics = new GraphicsDeviceManager(this);
+        
         Content.RootDirectory = "Content";
-        IsMouseVisible = true;
     }
 
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
 
-        _renderTarget = new RenderTarget2D(graphics.GraphicsDevice, DESIGNED_RESOLUTION_WIDTH, DESIGNED_RESOLUTION_HEIGHT, false,
-            SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+        graphics.PreferredBackBufferWidth = 1024;
+        graphics.PreferredBackBufferHeight = 768;
+        IsMouseVisible = true;
+        graphics.IsFullScreen = true;
+        
+        _renderTarget = new RenderTarget2D(
+            graphics.GraphicsDevice, 
+            DESIGNED_RESOLUTION_WIDTH, 
+            DESIGNED_RESOLUTION_HEIGHT, 
+            false,
+            SurfaceFormat.Color, 
+            DepthFormat.None,
+            0,
+            RenderTargetUsage.DiscardContents);
         _renderScaleRectangle = GetScaleRectangle();
         
         base.Initialize();
@@ -60,6 +78,35 @@ public class MainGame : Game
 
         // TODO: use this.Content to load your game content here
     }
+    private void CurrentGameState_OnStateSwitched(object sender, BaseGameState e)
+    {
+        SwitchGameState(e);
+    }
+
+    private void SwitchGameState(BaseGameState gameState)
+    {
+        if (_currentGameState != null)
+        {
+            _currentGameState.OnStateSwitched -= CurrentGameState_OnStateSwitched;
+            _currentGameState.OnEventNotification -= _currentGameState_OnEventNotification;
+            _currentGameState.UnloadContent(Content);
+        }
+        
+        _currentGameState = gameState;
+        _currentGameState.LoadContent(Content);
+        _currentGameState.OnStateSwitched += CurrentGameState_OnStateSwitched;
+        _currentGameState.OnEventNotification += _currentGameState_OnEventNotification;
+    }
+
+    private void _currentGameState_OnEventNotification(object sender, Enum.Events e)
+    {
+        switch (e)
+        {
+            case Events.GAME_QUIT:
+                Exit();
+                break;
+        }
+    }
 
     protected override void Update(GameTime gameTime)
     {
@@ -78,7 +125,7 @@ public class MainGame : Game
         GraphicsDevice.SetRenderTarget(_renderTarget);
         GraphicsDevice.Clear(Color.CornflowerBlue);
         spriteBatch.Begin();
-        _currentGameState.Render(spriteBatch);
+        // _currentGameState.Render(spriteBatch);
         spriteBatch.End();
         
         // now render the scaled content
@@ -87,8 +134,6 @@ public class MainGame : Game
         spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
         spriteBatch.Draw(_renderTarget, _renderScaleRectangle, Color.White);
         spriteBatch.End();
-        
-        // TODO: Add your drawing code here
 
         base.Draw(gameTime);
     }   
