@@ -1,5 +1,6 @@
 ﻿using chapter_04.Enum;
 using chapter_04.Objects.Base;
+using chapter_04.State;
 using chapter_04.States;
 using chapter_04.States.Base;
 using Microsoft.Xna.Framework;
@@ -36,6 +37,8 @@ public class MainGame : Game
         graphics.PreferredBackBufferHeight = 768;
         IsMouseVisible = true;
         graphics.IsFullScreen = true;
+        
+        graphics.ApplyChanges();
         
         _renderTarget = new RenderTarget2D(
             graphics.GraphicsDevice, 
@@ -75,6 +78,8 @@ public class MainGame : Game
     protected override void LoadContent()
     {
         spriteBatch = new SpriteBatch(GraphicsDevice);
+        
+        SwitchGameState(new SplashState());
 
         // TODO: use this.Content to load your game content here
     }
@@ -108,11 +113,14 @@ public class MainGame : Game
         }
     }
 
+    protected override void UnloadContent()
+    {
+        _currentGameState?.UnloadContent(Content);
+    }
+
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
+        _currentGameState.HandleInput();
 
         // TODO: Add your update logic here
 
@@ -125,7 +133,7 @@ public class MainGame : Game
         GraphicsDevice.SetRenderTarget(_renderTarget);
         GraphicsDevice.Clear(Color.CornflowerBlue);
         spriteBatch.Begin();
-        // _currentGameState.Render(spriteBatch);
+        _currentGameState.Render(spriteBatch);
         spriteBatch.End();
         
         // now render the scaled content
