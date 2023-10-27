@@ -1,10 +1,10 @@
-﻿using chapter_04.Enum;
-using chapter_04.State;
-using chapter_04.States.Base;
+﻿using wstoccob.Enum;
+using wstoccob.State;
+using wstoccob.States.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace chapter_04;
+namespace wstoccob;
 
 public class MainGame : Game
 {
