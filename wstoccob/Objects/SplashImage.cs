@@ -11,5 +11,7 @@ namespace wstoccob.Objects
         {
             _texture = texture;
         }
+        
+        
     }
 }

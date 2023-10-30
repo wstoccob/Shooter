@@ -13,18 +13,12 @@ namespace wstoccob.State
     {
         public override void LoadContent(ContentManager contentManager)
         {
-            AddGameObject(new SplashImage(contentManager.Load<Texture2D>("Barren")));
+            AddGameObject(new SplashImage(contentManager.Load<Texture2D>("splash")));
         }
-
-        public override void UnloadContent(ContentManager contentManager)
-        {
-            contentManager.Unload();
-        }
-
         public override void HandleInput()
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Enter))
+            var state = Keyboard.GetState();
+            if (state.IsKeyDown(Keys.Enter))
             {
                 SwitchState(new GameplayState());
             }

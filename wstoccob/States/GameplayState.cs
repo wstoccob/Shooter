@@ -5,25 +5,23 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using wstoccob.Objects;
 
 namespace wstoccob.States
 {
     public class GameplayState : BaseGameState
     {
+        private const string PlayerFighter = "fighter";
+        private const string BackgroundTexture = "Barren";
         public override void LoadContent(ContentManager contentManager)
         {
-            
+            AddGameObject(new SplashImage(LoadTexture(BackgroundTexture)));
+            AddGameObject(new SplashImage(LoadTexture(PlayerFighter)));
         }
-
-        public override void UnloadContent(ContentManager contentManager)
-        {
-            contentManager.Unload();
-        }
-
         public override void HandleInput()
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Enter))
+            var state = Keyboard.GetState();
+            if (state.IsKeyDown(Keys.Escape))
             {
                 NotifyEvent(Events.GAME_QUIT);
             }

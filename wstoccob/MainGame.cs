@@ -10,18 +10,17 @@ public class MainGame : Game
 {
     private BaseGameState _currentGameState;
     
-    private GraphicsDeviceManager graphics;
-    private SpriteBatch spriteBatch;
+    private GraphicsDeviceManager _graphics;
+    private SpriteBatch _spriteBatch;
 
     private RenderTarget2D _renderTarget;
     private Rectangle _renderScaleRectangle;
-    private const int DESIGNED_RESOLUTION_WIDTH = 640;
-    private const int DESIGNED_RESOLUTION_HEIGHT = 480;
-    private const float DESIGNED_RESOLUTION_ASPECT_RATIO = DESIGNED_RESOLUTION_WIDTH / (float)DESIGNED_RESOLUTION_HEIGHT;
-
+    private const int DESIGNED_RESOLUTION_WIDTH = 1280;
+    private const int DESIGNED_RESOLUTION_HEIGHT = 720;
+    private const float DESIGNED_RESOLUTION_ASPECT_RATIO = DESIGNED_RESOLUTION_WIDTH / (float) DESIGNED_RESOLUTION_HEIGHT;
     public MainGame()
     {
-        graphics = new GraphicsDeviceManager(this);
+        _graphics = new GraphicsDeviceManager(this);
         
         Content.RootDirectory = "Content";
     }
@@ -30,13 +29,13 @@ public class MainGame : Game
     {
         // TODO: Add your initialization logic here
 
-        graphics.PreferredBackBufferWidth = 1024;
-        graphics.PreferredBackBufferHeight = 768;
+        _graphics.PreferredBackBufferWidth = DESIGNED_RESOLUTION_WIDTH;
+        _graphics.PreferredBackBufferHeight = DESIGNED_RESOLUTION_HEIGHT;
         IsMouseVisible = true;
-        graphics.IsFullScreen = false;
-        graphics.ApplyChanges();
+        _graphics.IsFullScreen = false;
+        _graphics.ApplyChanges();
         _renderTarget = new RenderTarget2D(
-            graphics.GraphicsDevice, 
+            _graphics.GraphicsDevice, 
             DESIGNED_RESOLUTION_WIDTH, 
             DESIGNED_RESOLUTION_HEIGHT, 
             false,
@@ -73,7 +72,7 @@ public class MainGame : Game
 
     protected override void LoadContent()
     {
-        spriteBatch = new SpriteBatch(GraphicsDevice);
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
         
         SwitchGameState(new SplashState());
 
@@ -86,14 +85,10 @@ public class MainGame : Game
 
     private void SwitchGameState(BaseGameState gameState)
     {
-        if (_currentGameState != null)
-        {
-            _currentGameState.OnStateSwitched -= CurrentGameState_OnStateSwitched;
-            _currentGameState.OnEventNotification -= _currentGameState_OnEventNotification;
-            _currentGameState.UnloadContent(Content);
-        }
+        _currentGameState?.UnloadContent();
         
         _currentGameState = gameState;
+        _currentGameState.Initialize(Content);
         _currentGameState.LoadContent(Content);
         _currentGameState.OnStateSwitched += CurrentGameState_OnStateSwitched;
         _currentGameState.OnEventNotification += _currentGameState_OnEventNotification;
@@ -111,7 +106,7 @@ public class MainGame : Game
 
     protected override void UnloadContent()
     {
-        _currentGameState?.UnloadContent(Content);
+        _currentGameState?.UnloadContent();
     }
 
     protected override void Update(GameTime gameTime)
@@ -128,16 +123,16 @@ public class MainGame : Game
         // render to the render target
         GraphicsDevice.SetRenderTarget(_renderTarget);
         GraphicsDevice.Clear(Color.CornflowerBlue);
-        spriteBatch.Begin();
-        _currentGameState.Render(spriteBatch);
-        spriteBatch.End();
+        _spriteBatch.Begin();
+        _currentGameState.Render(_spriteBatch);
+        _spriteBatch.End();
         
         // now render the scaled content
-        graphics.GraphicsDevice.SetRenderTarget(null);
-        graphics.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
-        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
-        spriteBatch.Draw(_renderTarget, _renderScaleRectangle, Color.White);
-        spriteBatch.End();
+        _graphics.GraphicsDevice.SetRenderTarget(null);
+        _graphics.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
+        _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
+        _spriteBatch.Draw(_renderTarget, _renderScaleRectangle, Color.White);
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }   
