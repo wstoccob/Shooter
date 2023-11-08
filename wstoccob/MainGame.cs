@@ -85,10 +85,15 @@ public class MainGame : Game
 
     private void SwitchGameState(BaseGameState gameState)
     {
-        _currentGameState?.UnloadContent();
+        if (_currentGameState != null)
+        {
+            _currentGameState.OnStateSwitched -= CurrentGameState_OnStateSwitched;
+            _currentGameState.OnEventNotification -= _currentGameState_OnEventNotification;
+            _currentGameState.UnloadContent();
+        }
         
         _currentGameState = gameState;
-        _currentGameState.Initialize(Content);
+        _currentGameState.Initialize(Content, _graphics.GraphicsDevice.Viewport.Width, _graphics.GraphicsDevice.Viewport.Height);
         _currentGameState.LoadContent(Content);
         _currentGameState.OnStateSwitched += CurrentGameState_OnStateSwitched;
         _currentGameState.OnEventNotification += _currentGameState_OnEventNotification;
@@ -111,7 +116,8 @@ public class MainGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        _currentGameState.HandleInput();
+        _currentGameState.HandleInput(gameTime);
+        _currentGameState.Update(gameTime);
 
         // TODO: Add your update logic here
 
