@@ -57,6 +57,25 @@ namespace wstoccob.States
             });
         }
 
+        
+        
+        private void CreateBullets()
+        {
+            var bulletSpriteLeft = new BulletSprite(_bulletTexture);
+            var bulletSpriteRight = new BulletSprite(_bulletTexture);
+            
+            var bulletY = _playerSprite.Position.Y + 30;
+            var bulletLeftX = -_playerSprite.Position.X + _playerSprite.Width / 2 - 40;
+            var bulletRightX = _playerSprite.Position.X + _playerSprite.Width / 2 + 10;
+
+            bulletSpriteLeft.Position = new Vector2(bulletLeftX, bulletY);
+            bulletSpriteRight.Position = new Vector2(bulletRightX, bulletY);
+            _bulletList.Add(bulletSpriteLeft);
+            _bulletList.Add(bulletSpriteRight);
+            AddGameObject(bulletSpriteLeft);
+            AddGameObject(bulletSpriteRight);
+        }
+        
         protected override void SetInputManager()
         {
             InputManager = new InputManager(new GameplayInputMapper());
