@@ -44,8 +44,7 @@ namespace wstoccob.States
                 bullet.MoveUp();
             }
 
-            if (_lastShotAt != null &&
-                gameTime.TotalGameTime - _lastShotAt > TimeSpan.FromSeconds(0.2))
+            if (gameTime.TotalGameTime - _lastShotAt > TimeSpan.FromSeconds(0.2))
             {
                 _isShooting = false;
             }
@@ -107,7 +106,7 @@ namespace wstoccob.States
             var bulletSpriteRight = new BulletSprite(_bulletTexture);
             
             var bulletY = _playerSprite.Position.Y + 30;
-            var bulletLeftX = -_playerSprite.Position.X + _playerSprite.Width / 2 - 40;
+            var bulletLeftX = _playerSprite.Position.X + _playerSprite.Width / 2 - 40;
             var bulletRightX = _playerSprite.Position.X + _playerSprite.Width / 2 + 10;
 
             bulletSpriteLeft.Position = new Vector2(bulletLeftX, bulletY);
