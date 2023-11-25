@@ -36,6 +36,37 @@ namespace wstoccob.States
             var playerYPos = _viewportHeight - _playerSprite.Height - 30;
             _playerSprite.Position = new Vector2(playerXPos, playerYPos);
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            foreach (var bullet in _bulletList)
+            {
+                bullet.MoveUp();
+            }
+
+            if (_lastShotAt != null &&
+                gameTime.TotalGameTime - _lastShotAt > TimeSpan.FromSeconds(0.2))
+            {
+                _isShooting = false;
+            }
+
+            var newBulletList = new List<BulletSprite>();
+            foreach (var bullet in _bulletList)
+            {
+                var bulletStillOnScreet = bullet.Position.Y > -30;
+                if (bulletStillOnScreet)
+                {
+                    newBulletList.Add(bullet);
+                }
+                else
+                {
+                    RemoveGameObject(bullet);
+                }
+            }
+
+            _bulletList = newBulletList;
+        }
+
         public override void HandleInput(GameTime gameTime)
         {
             InputManager.GetCommands(cmd =>
@@ -54,11 +85,22 @@ namespace wstoccob.States
                     _playerSprite.MoveRight();
                     KeepPlayerInBounds();
                 }
+
+                if (cmd is GameplayInputCommand.PlayerShoots)
+                {
+                    Shoot(gameTime);
+                }
             });
         }
-
-        
-        
+        private void Shoot(GameTime gameTime)
+        {
+            if (!_isShooting)
+            {
+                CreateBullets();
+                _isShooting = true;
+                _lastShotAt = gameTime.TotalGameTime;
+            }
+        }
         private void CreateBullets()
         {
             var bulletSpriteLeft = new BulletSprite(_bulletTexture);
@@ -75,7 +117,6 @@ namespace wstoccob.States
             AddGameObject(bulletSpriteLeft);
             AddGameObject(bulletSpriteRight);
         }
-        
         protected override void SetInputManager()
         {
             InputManager = new InputManager(new GameplayInputMapper());

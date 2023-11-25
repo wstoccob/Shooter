@@ -56,6 +56,11 @@ namespace wstoccob.States.Base
         {
             _gameObjects.Add(gameObject);
         }
+
+        protected void RemoveGameObject(BaseGameObject gameObject)
+        {
+            _gameObjects.Remove(gameObject);
+        }
         public void Render(SpriteBatch spriteBatch)
         {
             foreach (var gameObject in _gameObjects.OrderBy(a => a.zIndex))
