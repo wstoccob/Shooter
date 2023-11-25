@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using wstoccob.Enum;
 using wstoccob.States.Base;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -15,14 +15,20 @@ namespace wstoccob.States
     {
         private const string PlayerFighter = "Fighter";
         private const string BackgroundTexture = "Barren";
+        private const string BulletTexture = "bullet";
 
         private PlayerSprite _playerSprite;
         private Texture2D _bulletTexture;
         private bool _isShooting;
         private TimeSpan _lastShotAt;
+
+        private List<BulletSprite> _bulletList;
         public override void LoadContent(ContentManager contentManager)
         {
             _playerSprite = new PlayerSprite(LoadTexture(PlayerFighter));
+            _bulletTexture = LoadTexture(BulletTexture);
+            _bulletList = new List<BulletSprite>(); 
+            
             AddGameObject(new TerrainBackground(LoadTexture(BackgroundTexture)));
             AddGameObject(_playerSprite);
             
