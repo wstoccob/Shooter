@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
+using wstoccob.Engine.States;
 
 namespace wstoccob.Engine.Sound
 {
@@ -7,6 +9,8 @@ namespace wstoccob.Engine.Sound
     {
         private int _soundtrackIndex = -1;
         private List<SoundEffectInstance> _soundtracks = new List<SoundEffectInstance>();
+        private Dictionary<Type, SoundEffect> _soundBank = new Dictionary<Type, SoundEffect>();
+        
 
         public void SetSoundtrack(List<SoundEffectInstance> tracks)
         {
@@ -32,6 +36,20 @@ namespace wstoccob.Engine.Sound
                 {
                     _soundtrackIndex = 0;
                 }
+            }
+        }
+
+        public void RegisterSound(BaseGameStateEvent gameEvent, SoundEffect sound)
+        {
+            _soundBank.Add(gameEvent.GetType(), sound);
+        }
+
+        public void OnNotify(BaseGameStateEvent gameEvent)
+        {
+            if (_soundBank.ContainsKey(gameEvent.GetType()))
+            {
+                var sound = _soundBank[gameEvent.GetType()];
+                sound.Play();
             }
         }
     }

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using wstoccob.Input;
 using wstoccob.Objects;
 using wstoccob.Engine.Input;
+using wstoccob.States.Gameplay;
 
 namespace wstoccob.States
 {
@@ -39,6 +40,9 @@ namespace wstoccob.States
             var track1 = LoadSound("FutureAmbient_1").CreateInstance();
             var track2 = LoadSound("FutureAmbient_2").CreateInstance();
             _soundManager.SetSoundtrack(new List<SoundEffectInstance>() {track1, track2});
+
+            var bulletSound = LoadSound("bulletSound");
+            _soundManager.RegisterSound(new GameplayEvents.PlayerShoots(), bulletSound);
         }
 
         public override void UpdateGameState(GameTime gameTime)
@@ -102,6 +106,7 @@ namespace wstoccob.States
                 CreateBullets();
                 _isShooting = true;
                 _lastShotAt = gameTime.TotalGameTime;
+                NotifyEvent(new GameplayEvents.PlayerShoots());
             }
         }
         private void CreateBullets()

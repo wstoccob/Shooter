@@ -91,6 +91,7 @@ namespace wstoccob.Engine.States
             {
                 gameObject.OnNotify(gameEvent);
             }
+            _soundManager.OnNotify(gameEvent);
         }
     }
 }

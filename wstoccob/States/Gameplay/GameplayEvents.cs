@@ -2,7 +2,7 @@
 
 namespace wstoccob.States.Gameplay
 {
-    public class GameplayEvents
+    public class GameplayEvents : BaseGameStateEvent
     {
         public class PlayerShoots : GameplayEvents { }
     }
