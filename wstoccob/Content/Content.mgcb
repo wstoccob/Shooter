@@ -41,7 +41,7 @@
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:bullet.wav
+/build:bullet.wav;bulletSound.wav
 
 #begin Empty.png
 /importer:TextureImporter
@@ -59,7 +59,7 @@
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:empty.wav
+/build:empty.wav;emptySound.wav
 
 #begin Fighter.png
 /importer:TextureImporter
