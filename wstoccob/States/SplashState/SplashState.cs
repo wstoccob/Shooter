@@ -27,6 +27,8 @@ namespace wstoccob.State
             });
         }
 
+        public override void UpdateGameState(GameTime _) { }
+
         protected override void SetInputManager()
         {
             InputManager = new InputManager(new SplashInputMapper());

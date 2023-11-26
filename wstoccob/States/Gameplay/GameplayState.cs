@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using wstoccob.Engine.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using wstoccob.Input;
 using wstoccob.Objects;
@@ -34,9 +35,13 @@ namespace wstoccob.States
             var playerXPos = _viewportWidth / 2 - _playerSprite.Width / 2;
             var playerYPos = _viewportHeight - _playerSprite.Height - 30;
             _playerSprite.Position = new Vector2(playerXPos, playerYPos);
+
+            var track1 = LoadSound("FutureAmbient_1").CreateInstance();
+            var track2 = LoadSound("FutureAmbient_2").CreateInstance();
+            _soundManager.SetSoundtrack(new List<SoundEffectInstance>() {track1, track2});
         }
 
-        public override void Update(GameTime gameTime)
+        public override void UpdateGameState(GameTime gameTime)
         {
             foreach (var bullet in _bulletList)
             {
