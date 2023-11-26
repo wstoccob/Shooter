@@ -1,9 +1,7 @@
-﻿
-
-using System;
+﻿using System;
 using Microsoft.Xna.Framework.Input;
 
-namespace wstoccob.Input.Base
+namespace wstoccob.Engine.Input
 {
     public class InputManager
     {

@@ -1,13 +1,12 @@
-﻿using System.Diagnostics;
-using wstoccob.States.Base;
+﻿using wstoccob.Engine.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using wstoccob.Input;
-using wstoccob.Input.Base;
 using wstoccob.Objects;
 using wstoccob.States;
+using wstoccob.Engine.Input;
+using wstoccob.Input;
 
 namespace wstoccob.State
 {
@@ -19,11 +18,13 @@ namespace wstoccob.State
         }
         public override void HandleInput(GameTime gameTime)
         {
-            var state = Keyboard.GetState();
-            if (state.IsKeyDown(Keys.Enter))
+            InputManager.GetCommands(cmd =>
             {
-                SwitchState(new GameplayState());
-            }
+                if (cmd is SplashInputCommand.GameSelect)
+                {
+                    SwitchState(new GameplayState());
+                }
+            });
         }
 
         protected override void SetInputManager()

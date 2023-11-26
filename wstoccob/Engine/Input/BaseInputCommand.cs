@@ -1,4 +1,4 @@
-﻿namespace wstoccob.Input.Base
+﻿namespace wstoccob.Engine.Input
 {
     public class BaseInputCommand { }
 }

@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using wstoccob.Objects.Base;
+using wstoccob.Engine.Objects;
 
 
 namespace wstoccob.Objects

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using wstoccob.Objects.Base;
-using wstoccob.Enum;
+using wstoccob.Engine.Objects;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using wstoccob.Input.Base;
+using wstoccob.Engine.Input;
 
-namespace wstoccob.States.Base
+namespace wstoccob.Engine.States
 {
     public abstract class BaseGameState
     {
@@ -41,7 +40,7 @@ namespace wstoccob.States.Base
         public abstract void HandleInput(GameTime gameTime);
         
         public event EventHandler<BaseGameState> OnStateSwitched;
-        public event EventHandler<Events> OnEventNotification;
+        public event EventHandler<BaseGameStateEvent> OnEventNotification;
         protected abstract void SetInputManager();
         
         public void UnloadContent()
@@ -68,12 +67,12 @@ namespace wstoccob.States.Base
                 gameObject.Render(spriteBatch);
             }
         }
-        public void NotifyEvent(Events eventType, object argument = null)
+        protected void NotifyEvent(BaseGameStateEvent gameEvent)
         {
-            OnEventNotification?.Invoke(this, eventType);
+            OnEventNotification?.Invoke(this, gameEvent);
             foreach (var gameObject in _gameObjects)
             {
-                gameObject.OnNotify(eventType);
+                gameObject.OnNotify(gameEvent);
             }
         }
     }

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using wstoccob.Enum;
-using wstoccob.States.Base;
+using wstoccob.Engine.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using wstoccob.Input;
-using wstoccob.Input.Base;
 using wstoccob.Objects;
+using wstoccob.Engine.Input;
 
 namespace wstoccob.States
 {
@@ -72,7 +71,7 @@ namespace wstoccob.States
             {
                 if (cmd is GameplayInputCommand.GameExit)
                 {
-                    NotifyEvent(Events.GAME_QUIT);
+                    NotifyEvent(new BaseGameStateEvent.GameQuit());
                 }
                 if (cmd is GameplayInputCommand.PlayerMoveLeft)
                 {

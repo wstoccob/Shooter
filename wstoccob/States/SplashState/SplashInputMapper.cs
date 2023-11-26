@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
-using wstoccob.Input.Base;
+using wstoccob.Engine.Input;
 
 namespace wstoccob.Input
 {

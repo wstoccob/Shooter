@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using wstoccob.Engine.Input;
 
-namespace wstoccob.Input.Base
+namespace wstoccob.Engine.Input
 {
     public class BaseInputMapper
     {

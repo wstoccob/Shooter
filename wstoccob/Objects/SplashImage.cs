@@ -1,5 +1,4 @@
-﻿using wstoccob.Objects;
-using wstoccob.Objects.Base;
+﻿using wstoccob.Engine.Objects;
 using Microsoft.Xna.Framework.Graphics;
 
 

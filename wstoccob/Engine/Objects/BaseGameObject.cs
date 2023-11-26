@@ -1,9 +1,8 @@
-﻿using System;
-using wstoccob.Enum;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using wstoccob.Engine.States;
 
-namespace wstoccob.Objects.Base
+namespace wstoccob.Engine.Objects
 {
     public class BaseGameObject
     {
@@ -27,7 +26,7 @@ namespace wstoccob.Objects.Base
         }
         
         
-        public virtual void OnNotify(Events eventType, object argument = null) { }
+        public virtual void OnNotify(BaseGameStateEvent gameEvent) { }
 
         public virtual void Render(SpriteBatch spriteBatch)
         {
