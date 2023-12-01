@@ -6,8 +6,8 @@ namespace wstoccob.Engine.Particles
     public abstract class EmitterParticleState
     {
         public RandomNumberGenerator _rnd = new RandomNumberGenerator();
-        public abstract int MinLifeSpan { get; }
-        public abstract int MaxLifeSpan { get; }
+        public abstract int MinLifespan { get; }
+        public abstract int MaxLifespan { get; }
 
         public abstract float Velocity { get; }
         public abstract float VelocityDeviation { get; }
@@ -26,7 +26,7 @@ namespace wstoccob.Engine.Particles
 
         public int GenerateLifespan()
         {
-            return _rnd.NextRandom(MinLifeSpan, MaxLifeSpan);
+            return _rnd.NextRandom(MinLifespan, MaxLifespan);
         }
 
         public float GenerateVelocity()

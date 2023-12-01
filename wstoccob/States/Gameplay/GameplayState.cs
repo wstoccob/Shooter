@@ -24,7 +24,7 @@ namespace wstoccob.States
         private TimeSpan _lastShotAt;
 
         private List<BulletSprite> _bulletList;
-        public override void LoadContent(ContentManager contentManager)
+        public override void LoadContent()
         {
             _playerSprite = new PlayerSprite(LoadTexture(PlayerFighter));
             _bulletTexture = LoadTexture(BulletTexture);

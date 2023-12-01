@@ -100,7 +100,7 @@ public class MainGame : Game
         
         _currentGameState = gameState;
         _currentGameState.Initialize(Content, _graphics.GraphicsDevice.Viewport.Width, _graphics.GraphicsDevice.Viewport.Height);
-        _currentGameState.LoadContent(Content);
+        _currentGameState.LoadContent();
         _currentGameState.OnStateSwitched += CurrentGameState_OnStateSwitched;
         _currentGameState.OnEventNotification += _currentGameState_OnEventNotification;
     }

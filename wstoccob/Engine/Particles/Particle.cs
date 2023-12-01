@@ -16,7 +16,9 @@ namespace wstoccob.Engine.Particles.EmitterTypes
         private float _rotation;
         private float _opacityFadingRate;
 
-        public Particle(int lifespan, Vector2 position, Vector2 direction, Vector2 gravity,
+        public Particle() { }
+        
+        public void Activate(int lifespan, Vector2 position, Vector2 direction, Vector2 gravity,
             float velocity, float acceleration, float scale, float rotation, float opacity, float opacityFadingRate)
         {
             _lifespan = lifespan;

@@ -12,9 +12,9 @@ namespace wstoccob.State
 {
     public class SplashState : BaseGameState
     {
-        public override void LoadContent(ContentManager contentManager)
+        public override void LoadContent()
         {
-            AddGameObject(new SplashImage(contentManager.Load<Texture2D>("splash")));
+            AddGameObject(new SplashImage(LoadTexture("splash")));
         }
         public override void HandleInput(GameTime gameTime)
         {

@@ -46,7 +46,7 @@ namespace wstoccob.Engine.States
             SetInputManager();
         }
         
-        public abstract void LoadContent(ContentManager contentManager);
+        public abstract void LoadContent();
         public abstract void HandleInput(GameTime gameTime);
         public abstract void UpdateGameState(GameTime gameTime);
         
