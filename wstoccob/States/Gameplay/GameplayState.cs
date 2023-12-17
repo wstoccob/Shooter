@@ -20,6 +20,8 @@ namespace wstoccob.States
         private const string BulletTexture = "bullet";
         private const string MissileTexture = "Missile05";
         private const string ExhaustTexture = "Cloud001";
+        private const string ChopperTexture = "Chopper";
+        private const string ExplosionTexture = "explosion";
 
         private PlayerSprite _playerSprite;
         private Texture2D _bulletTexture;
