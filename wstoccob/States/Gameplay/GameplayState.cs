@@ -9,6 +9,7 @@ using wstoccob.Input;
 using wstoccob.Objects;
 using wstoccob.Engine.Input;
 using wstoccob.Engine.Objects;
+using wstoccob.Particles;
 using wstoccob.States.Gameplay;
 
 namespace wstoccob.States
@@ -23,19 +24,29 @@ namespace wstoccob.States
         private const string ChopperTexture = "Chopper";
         private const string ExplosionTexture = "explosion";
 
+        private const int MaxExplosionAge = 600; // 10 seconds: 10s * 60 frames
+        private const int ExplosionActiveLength = 75; // 1.2 seconds
+        
         private PlayerSprite _playerSprite;
+        
         private Texture2D _bulletTexture;
         private Texture2D _missileTexture;
         private Texture2D _exhaustTexture;
+        private Texture2D _chopperTexture;
+        private Texture2D _explosionTexture;
         
         private bool _isShootingMissile;
         private bool _isShootingBullets;
-        
         private TimeSpan _lastBulletShotAt;
         private TimeSpan _lastMissileShotAt;
 
         private List<BulletSprite> _bulletList;
         private List<MissileSprite> _missileList;
+        private List<ExplosionEmitter> _explosionList = new List<ExplosionEmitter>();
+        private List<ChopperSprite> _enemyList = new List<ChopperSprite>();
+
+        private ChopperGenerator _chopperGenerator;
+        
         public override void LoadContent()
         {
             _playerSprite = new PlayerSprite(LoadTexture(PlayerFighter));
@@ -44,6 +55,10 @@ namespace wstoccob.States
             _missileTexture = LoadTexture(MissileTexture);
             _exhaustTexture = LoadTexture(ExhaustTexture);
             _missileList = new List<MissileSprite>();
+            _explosionTexture = LoadTexture(ExplosionTexture);
+            _chopperTexture = LoadTexture(ChopperTexture);
+            _chopperGenerator = new ChopperGenerator(_chopperTexture, 4, AddChopper);
+            _chopperGenerator.GenerateChoppers();
             
             AddGameObject(new TerrainBackground(LoadTexture(BackgroundTexture)));
             AddGameObject(_playerSprite);
@@ -86,8 +101,14 @@ namespace wstoccob.States
                 _isShootingMissile = false;
             }
 
+            foreach (var chopper in _enemyList)
+            {
+                chopper.Update();
+            }
+
             _bulletList = CleanObjects(_bulletList);
             _missileList = CleanObjects(_missileList);
+            _enemyList = CleanObjects(_enemyList);
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -156,6 +177,42 @@ namespace wstoccob.States
             missileSprite.Position = new Vector2(_playerSprite.Position.X + 33, _playerSprite.Position.Y - 25);
             _missileList.Add(missileSprite);
             AddGameObject(missileSprite);
+        }
+
+        private void AddChopper(ChopperSprite chopper)
+        {
+            chopper.OnObjectChanged += _chopperSprite_OnObjectChanged;
+            _enemyList.Add(chopper);
+            AddGameObject(chopper);
+        }
+
+        private void _chopperSprite_OnObjectChanged(object sender, BaseGameStateEvent e)
+        {
+            
+        }
+
+        private void AddExplosion(Vector2 position)
+        {
+            var explosion = new ExplosionEmitter(_explosionTexture, position);
+            AddGameObject(explosion);
+            _explosionList.Add(explosion);
+        }
+
+        private void UpdateExplosions(GameTime gameTime)
+        {
+            foreach (var explosion in _explosionList)
+            {
+                explosion.Update(gameTime);
+                if (explosion.Age > ExplosionActiveLength)
+                {
+                    explosion.Deactivate();
+                }
+
+                if (explosion.Age > MaxExplosionAge)
+                {
+                    RemoveGameObject(explosion);
+                }
+            }
         }
 
         private List<T> CleanObjects<T>(List<T> objectList) where T : BaseGameObject
