@@ -14,7 +14,10 @@ namespace wstoccob.Engine.Particles
         private EmitterParticleState _emitterParticleState;
         private IEmitterType _emitterType;
         private int _nbParticleEmittedPerUpdate = 0;
-        private int _maxNbParticle;
+        private int _maxNbParticle = 0;
+        private bool _active = true;
+        
+        public int Age { set; get; }
 
         public Emitter(Texture2D texture, Vector2 position, EmitterParticleState particleState,
             IEmitterType emitterType,
@@ -26,11 +29,15 @@ namespace wstoccob.Engine.Particles
             _nbParticleEmittedPerUpdate = nbParticleEmittedPerUpdate;
             _maxNbParticle = maxParticles;
             Position = position;
+            Age = 0;
         }
 
         public void Update(GameTime gameTime)
         {
-            EmitParticles();
+            if (_active)
+            {
+                EmitParticles();
+            }
             var particleNode = _activeParticles.First;
             while (particleNode != null)
             {
@@ -44,6 +51,8 @@ namespace wstoccob.Engine.Particles
 
                 particleNode = nextNode;
             }
+
+            Age++;
         }
 
         public override void Render(SpriteBatch spriteBatch)
@@ -58,16 +67,25 @@ namespace wstoccob.Engine.Particles
             }
         }
 
+        public void Deactivate()
+        {
+            _active = false;
+        }
+
         private void EmitParticles()
         {
             if (_activeParticles.Count >= _maxNbParticle) return;
+            
             var maxAmountThatCanBeCreated = _maxNbParticle - _activeParticles.Count;
             var neededParticles = Math.Min(maxAmountThatCanBeCreated, _nbParticleEmittedPerUpdate);
+            
             var nbToReuse = Math.Min(_inactiveParticles.Count, neededParticles);
             var nbToCreate = neededParticles - nbToReuse;
+            
             for (var i = 0; i < nbToReuse; i++)
             {
                 var particleNode = _inactiveParticles.First;
+                
                 EmitNewParticle(particleNode.Value);
                 _inactiveParticles.Remove(particleNode);
             }
@@ -88,8 +106,10 @@ namespace wstoccob.Engine.Particles
             var gravity = _emitterParticleState.Gravity;
             var acceleration = _emitterParticleState.Acceleration;
             var opacityFadingRate = _emitterParticleState.OpacityFadingRate;
+            
             var direction = _emitterType.GetParticleDirection();
             var position = _emitterType.GetParticlePosition(_position);
+            
             particle.Activate(lifespan, position, direction, gravity, velocity, acceleration, 
                 scale, rotation, opacity, opacityFadingRate);
             _activeParticles.AddLast(particle);

@@ -125,8 +125,6 @@ public class MainGame : Game
         _currentGameState.HandleInput(gameTime);
         _currentGameState.Update(gameTime);
 
-        // TODO: Add your update logic here
-
         base.Update(gameTime);
     }
 

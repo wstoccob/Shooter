@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using wstoccob.Engine.States;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using wstoccob.Input;
-using wstoccob.Objects;
+using Microsoft.Xna.Framework.Graphics;
 using wstoccob.Engine.Input;
 using wstoccob.Engine.Objects;
+using wstoccob.Engine.States;
+using wstoccob.Input;
+using wstoccob.Objects;
 using wstoccob.Particles;
-using wstoccob.States.Gameplay;
 
-namespace wstoccob.States
+namespace wstoccob.States.Gameplay
 {
     public class GameplayState : BaseGameState
     {
@@ -27,21 +25,22 @@ namespace wstoccob.States
         private const int MaxExplosionAge = 600; // 10 seconds: 10s * 60 frames
         private const int ExplosionActiveLength = 75; // 1.2 seconds
         
-        private PlayerSprite _playerSprite;
-        
         private Texture2D _bulletTexture;
         private Texture2D _missileTexture;
         private Texture2D _exhaustTexture;
         private Texture2D _chopperTexture;
         private Texture2D _explosionTexture;
         
+        private PlayerSprite _playerSprite;
+        private bool _playerDead;
+        
         private bool _isShootingMissile;
         private bool _isShootingBullets;
         private TimeSpan _lastBulletShotAt;
         private TimeSpan _lastMissileShotAt;
 
-        private List<BulletSprite> _bulletList;
-        private List<MissileSprite> _missileList;
+        private List<BulletSprite> _bulletList = new List<BulletSprite>();
+        private List<MissileSprite> _missileList =  new List<MissileSprite>();
         private List<ExplosionEmitter> _explosionList = new List<ExplosionEmitter>();
         private List<ChopperSprite> _enemyList = new List<ChopperSprite>();
 
@@ -49,24 +48,17 @@ namespace wstoccob.States
         
         public override void LoadContent()
         {
-            _playerSprite = new PlayerSprite(LoadTexture(PlayerFighter));
+            
             _bulletTexture = LoadTexture(BulletTexture);
-            _bulletList = new List<BulletSprite>();
             _missileTexture = LoadTexture(MissileTexture);
             _exhaustTexture = LoadTexture(ExhaustTexture);
-            _missileList = new List<MissileSprite>();
             _explosionTexture = LoadTexture(ExplosionTexture);
             _chopperTexture = LoadTexture(ChopperTexture);
-            _chopperGenerator = new ChopperGenerator(_chopperTexture, 4, AddChopper);
-            _chopperGenerator.GenerateChoppers();
+            
+            _playerSprite = new PlayerSprite(LoadTexture(PlayerFighter));
             
             AddGameObject(new TerrainBackground(LoadTexture(BackgroundTexture)));
-            AddGameObject(_playerSprite);
             
-            var playerXPos = _viewportWidth / 2 - _playerSprite.Width / 2;
-            var playerYPos = _viewportHeight - _playerSprite.Height - 30;
-            _playerSprite.Position = new Vector2(playerXPos, playerYPos);
-
             var track1 = LoadSound("FutureAmbient_1").CreateInstance();
             var track2 = LoadSound("FutureAmbient_2").CreateInstance();
             var track3 = LoadSound("FutureAmbient_3").CreateInstance();
@@ -78,6 +70,8 @@ namespace wstoccob.States
             
             var missileSound = LoadSound("missile");
             _soundManager.RegisterSound(new GameplayEvents.PlayerShootsMissile(), missileSound, 0.4f, -0.2f, 0.0f);
+            
+            ResetGame();
         }
 
         public override void UpdateGameState(GameTime gameTime)
@@ -91,6 +85,11 @@ namespace wstoccob.States
             {
                 missile.Update(gameTime);
             }
+
+            foreach (var chopper in _enemyList)
+            {
+                chopper.Update();
+            }
             if (gameTime.TotalGameTime - _lastBulletShotAt > TimeSpan.FromSeconds(0.2))
             {
                 _isShootingBullets = false;
@@ -99,11 +98,6 @@ namespace wstoccob.States
             if (gameTime.TotalGameTime - _lastMissileShotAt > TimeSpan.FromSeconds(1.0))
             {
                 _isShootingMissile = false;
-            }
-
-            foreach (var chopper in _enemyList)
-            {
-                chopper.Update();
             }
 
             _bulletList = CleanObjects(_bulletList);
@@ -135,6 +129,46 @@ namespace wstoccob.States
                     Shoot(gameTime);
                 }
             });
+        }
+
+        private void ResetGame()
+        {
+            if (_chopperGenerator != null)
+            {
+                _chopperGenerator.StopGenerating();
+            }
+            foreach(var bullet in _bulletList)
+            {
+                RemoveGameObject(bullet);
+            }
+            foreach(var missile in _missileList)
+            {
+                RemoveGameObject(missile);
+            }
+            foreach(var chopper in _enemyList)
+            {
+                RemoveGameObject(chopper);
+            }
+            foreach(var explosion in _explosionList)
+            {
+                RemoveGameObject(explosion);
+            }
+            
+            _bulletList = new List<BulletSprite>();
+            _missileList = new List<MissileSprite>();
+            _explosionList = new List<ExplosionEmitter>();
+            _enemyList = new List<ChopperSprite>();
+            
+            _chopperGenerator = new ChopperGenerator(_chopperTexture, 4, AddChopper);
+            _chopperGenerator.GenerateChoppers();
+            
+            AddGameObject(_playerSprite);
+            
+            var playerXPos = _viewportWidth / 2 - _playerSprite.Width / 2;
+            var playerYPos = _viewportHeight - _playerSprite.Height - 30;
+            _playerSprite.Position = new Vector2(playerXPos, playerYPos);
+
+            _playerDead = false;
         }
         private void Shoot(GameTime gameTime)
         {

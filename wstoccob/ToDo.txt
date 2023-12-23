@@ -1,0 +1,1 @@
+﻿-you need to update Emitter.cs so it has new methods like Deactivate() before proceeding to Collision Detection
