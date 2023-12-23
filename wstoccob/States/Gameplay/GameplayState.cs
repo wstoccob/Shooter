@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -67,9 +68,9 @@ namespace wstoccob.States.Gameplay
 
             var bulletSound = LoadSound("bulletSound");
             _soundManager.RegisterSound(new GameplayEvents.PlayerShoots(), bulletSound);
-            
             var missileSound = LoadSound("missile");
             _soundManager.RegisterSound(new GameplayEvents.PlayerShootsMissile(), missileSound, 0.4f, -0.2f, 0.0f);
+            var 
             
             ResetGame();
         }
@@ -100,9 +101,13 @@ namespace wstoccob.States.Gameplay
                 _isShootingMissile = false;
             }
 
+            DetectCollisions();
+            UpdateExplosions(gameTime);
+            
             _bulletList = CleanObjects(_bulletList);
             _missileList = CleanObjects(_missileList);
             _enemyList = CleanObjects(_enemyList);
+
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -128,6 +133,32 @@ namespace wstoccob.States.Gameplay
                 {
                     Shoot(gameTime);
                 }
+            });
+        }
+
+        private void DetectCollisions()
+        {
+            var bulletCollisionDetector = new AABBCollisionDetector<BulletSprite, ChopperSprite>(_bulletList);
+            var missileCollisionDetector = new AABBCollisionDetector<MissileSprite, ChopperSprite>(_missileList);
+            var chopperCollisionDetector = new AABBCollisionDetector<ChopperSprite, PlayerSprite>(_enemyList);
+            
+            bulletCollisionDetector.DetectCollisions(_enemyList, (bullet, chopper) =>
+            {
+                var hitEvent = new GameplayEvents.ChopperHitBy(bullet);
+                chopper.OnNotify(hitEvent);
+                _soundManager.OnNotify(hitEvent);
+                bullet.Destroy();
+            });
+            missileCollisionDetector.DetectCollisions(_enemyList, (missile, chopper) =>
+            {
+                var hitEvent = new GameplayEvents.ChopperHitBy(missile);
+                chopper.OnNotify(hitEvent);
+                _soundManager.OnNotify(hitEvent);
+                missile.Destroy();
+            });
+            chopperCollisionDetector.DetectCollisions(_playerSprite, (chopper, player) =>
+            {
+                KillPlayer();
             });
         }
 
@@ -188,6 +219,15 @@ namespace wstoccob.States.Gameplay
                 NotifyEvent(new GameplayEvents.PlayerShootsMissile());
             }
         }
+
+        private async void KillPlayer()
+        {
+            _playerDead = true;
+            AddExplosion(_playerSprite.Position);
+            RemoveGameObject(_playerSprite);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            ResetGame();
+        }
         private void CreateBullets()
         {
             var bulletSpriteLeft = new BulletSprite(_bulletTexture);
@@ -222,7 +262,17 @@ namespace wstoccob.States.Gameplay
 
         private void _chopperSprite_OnObjectChanged(object sender, BaseGameStateEvent e)
         {
-            
+            var chopper = (ChopperSprite)sender;
+            switch (e)
+            {
+                case GameplayEvents.EnemyLostLife ge:
+                    if (ge.CurrentLife <= 0)
+                    {
+                        AddExplosion(new Vector2(chopper.Position.X - 40, chopper.Position.Y - 40));
+                        chopper.Destroy();
+                    }
+                    break;
+            }
         }
 
         private void AddExplosion(Vector2 position)
@@ -254,14 +304,14 @@ namespace wstoccob.States.Gameplay
             List<T> listOfItemsToKeep = new List<T>();
             foreach (T item in objectList)
             {
-                var stillOnScreen = item.Position.Y > -50;
-                if (stillOnScreen)
+                var offScreen = item.Position.Y < -50;
+                if (offScreen || item.Destroyed)
                 {
-                    listOfItemsToKeep.Add(item);
+                    RemoveGameObject(item);
                 }
                 else
                 {
-                    RemoveGameObject(item);
+                    listOfItemsToKeep.Add(item);
                 }
             }
 

@@ -22,7 +22,7 @@ namespace wstoccob.Engine.States
         protected int _viewportHeight;
         protected int _viewportWidth;
 
-        protected bool _debug = true;
+        protected bool _debug = false;
         
         private readonly List<BaseGameObject> _gameObjects = new List<BaseGameObject>();
         

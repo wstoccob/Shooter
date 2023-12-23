@@ -89,16 +89,40 @@ namespace wstoccob.Objects
         {
             var chopperRect = new Rectangle(ChopperStartX, ChopperStartY, ChopperWidth, ChopperHeight);
             var chopperDestRectangle = new Rectangle(_position.ToPoint(), new Point(ChopperWidth, ChopperHeight));
-            var color = Color.White;
-
+            
             var bladesRect = new Rectangle(BladesStartX, BladesStartY, BladesWidth, BladesHeight);
             var bladesDestRect = new Rectangle(_position.ToPoint(), new Point(BladesWidth, BladesHeight));
             
+            var color = GetColor();
             spriteBatch.Draw(_texture, chopperDestRectangle, chopperRect, color, MathHelper.Pi, 
                 new Vector2(ChopperBladePosX, ChopperBladePosY), SpriteEffects.None, 0f);
             spriteBatch.Draw(_texture, bladesDestRect, bladesRect, Color.White, _angle, 
                 new Vector2(BladesCenterX, BladesCenterY), SpriteEffects.None, 0f);
             _angle += BladeSpeed;
+        }
+        
+        private Color GetColor()
+        {
+            var color = Color.White;
+            foreach (var flashStartEndFrames in GetFlashStartEndFrames())
+            {
+                if (_hitAt >= flashStartEndFrames.Item1 && _hitAt < flashStartEndFrames.Item2)
+                {
+                    color = Color.OrangeRed;
+                }    
+            }
+
+            _hitAt++;
+            return color;
+        }
+        
+        private List<(int, int)> GetFlashStartEndFrames()
+        {
+            return new List<(int, int)>
+            {
+                (0, 3),
+                (10, 13)
+            };
         }
     }
 }

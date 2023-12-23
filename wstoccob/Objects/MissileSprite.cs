@@ -23,8 +23,14 @@ namespace wstoccob.Objects
         {
             set
             {
-                _position = value;
-                _exhaustEmitter.Position = new Vector2(_position.X + 18, _position.Y + _missileHeight - 10);
+                var emitterOffsetX = 18;
+                var emitterOffsetY = -10;
+
+                var emitterPosX = _position.X + emitterOffsetX;
+                var emitterPosY = _position.Y + _missileHeight + emitterOffsetY;
+
+                _exhaustEmitter.Position = new Vector2(emitterPosX, emitterPosY);
+                base.Position = value;
             }
         }
 
