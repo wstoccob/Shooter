@@ -72,7 +72,7 @@ namespace wstoccob.Engine.Objects
             OnObjectChanged?.Invoke(this, e);
         }
         
-        public void AddBoundingbox(BoundingBox bb)
+        public void AddBoundingBox(BoundingBox bb)
         {
             _boundingBoxes.Add(bb);
         }

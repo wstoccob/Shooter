@@ -49,7 +49,7 @@ namespace wstoccob.Objects
         {
             _texture = texture;
             _path = path;
-            AddBoundingbox(new Engine.Objects.BoundingBox(new Vector2(BBPosX, BBPosY), BBWidth, BbHeight));
+            AddBoundingBox(new Engine.Objects.BoundingBox(new Vector2(BBPosX, BBPosY), BBWidth, BbHeight));
         }
 
         public void Update()

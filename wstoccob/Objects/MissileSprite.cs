@@ -5,7 +5,7 @@ using wstoccob.Particles;
 
 namespace wstoccob.Objects
 {
-    public class MissileSprite : BaseGameObject
+    public class MissileSprite : BaseGameObject, IGameObjectWithDamage
     {
         private const float StartSpeed = 0.5f;
         private const float Acceleration = 0.15f;
@@ -14,6 +14,9 @@ namespace wstoccob.Objects
 
         private int _missileHeight;
         private int _missileWidth;
+        
+        public int Damage => 25;
+        
         private ExhaustEmitter _exhaustEmitter;
 
         public override Vector2 Position
@@ -33,6 +36,19 @@ namespace wstoccob.Objects
             var ratio = (float)_texture.Height / (float)_texture.Width;
             _missileWidth = 50;
             _missileHeight = (int)(_missileWidth * ratio);
+            
+            var bbRatio = (float) _missileWidth / _texture.Width;
+            
+            var bbOriginalPositionX = 352;
+            var bbOriginalPositionY = 7;
+            var bbOriginalWidth = 150;
+            var bbOriginalHeight = 500;
+            
+            var bbPositionX = bbOriginalPositionX * bbRatio;
+            var bbPositionY = bbOriginalPositionY * bbRatio;
+            var bbWidth = bbOriginalWidth * bbRatio;
+            var bbHeight = bbOriginalHeight * bbRatio;
+            AddBoundingBox(new Engine.Objects.BoundingBox(new Vector2(bbPositionX, bbPositionY), bbWidth, bbHeight));
         }
 
         public void Update(GameTime gameTime)

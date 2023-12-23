@@ -21,6 +21,8 @@ namespace wstoccob.Engine.States
         
         protected int _viewportHeight;
         protected int _viewportWidth;
+
+        protected bool _debug = true;
         
         private readonly List<BaseGameObject> _gameObjects = new List<BaseGameObject>();
         
@@ -82,6 +84,10 @@ namespace wstoccob.Engine.States
             foreach (var gameObject in _gameObjects.OrderBy(a => a.zIndex))
             {
                 gameObject.Render(spriteBatch);
+                if (_debug)
+                {
+                    gameObject.RenderBoundingBoxes(spriteBatch);
+                }
             }
         }
         protected void NotifyEvent(BaseGameStateEvent gameEvent)
