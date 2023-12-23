@@ -36,6 +36,11 @@ namespace wstoccob.Objects
         private int _life = 40;
 
         private int _hitAt = 0;
+
+        private int BBPosX = -16;
+        private int BBPosY = -63;
+        private int BBWidth = 34;
+        private int BbHeight = 98;
         
         private List<(int, Vector2)> _path;
         
@@ -44,6 +49,7 @@ namespace wstoccob.Objects
         {
             _texture = texture;
             _path = path;
+            AddBoundingbox(new Engine.Objects.BoundingBox(new Vector2(BBPosX, BBPosY), BBWidth, BbHeight));
         }
 
         public void Update()
