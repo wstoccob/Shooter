@@ -19,6 +19,7 @@ namespace wstoccob.States.Gameplay
             {
                 HitBy = gameObject;
             }
+            public ChopperHitBy() { }
         }
 
         public class EnemyLostLife : GameplayEvents
