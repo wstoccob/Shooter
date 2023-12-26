@@ -70,6 +70,7 @@ namespace wstoccob.States.Gameplay
             _soundManager.RegisterSound(new GameplayEvents.PlayerShoots(), bulletSound);
             var missileSound = LoadSound("missile");
             _soundManager.RegisterSound(new GameplayEvents.PlayerShootsMissile(), missileSound, 0.4f, -0.2f, 0.0f);
+            var 
             
             ResetGame();
         }
