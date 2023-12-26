@@ -71,9 +71,9 @@ namespace wstoccob.States.Gameplay
             var missileSound = LoadSound("missile");
             _soundManager.RegisterSound(new GameplayEvents.PlayerShootsMissile(), missileSound, 0.4f, -0.2f, 0.0f);
             var damageSound = LoadSound("damageSound");
-            _soundManager.RegisterSound(new GameplayEvents.ChopperHitBy(), damageSound, 0.4f, -0.2f, 0.0f);
+            _soundManager.RegisterSound(new GameplayEvents.ChopperHitBy(), damageSound, 1f, -0.2f, 0.0f);
             var explosionSound = LoadSound("explosionSound");
-            _soundManager.RegisterSound(new GameplayEvents.EnemyLostLife(), explosionSound, 0.4f, -0.2f, 0.0f);
+            _soundManager.RegisterSound(new GameplayEvents.EnemyLostLife(), explosionSound, 1f, -0.2f, 0.0f);
             
             ResetGame();
         }
@@ -149,14 +149,14 @@ namespace wstoccob.States.Gameplay
             {
                 var hitEvent = new GameplayEvents.ChopperHitBy(bullet);
                 chopper.OnNotify(hitEvent);
-                _soundManager.OnNotify(hitEvent);
+                NotifyEvent(new GameplayEvents.ChopperHitBy());
                 bullet.Destroy();
             });
             missileCollisionDetector.DetectCollisions(_enemyList, (missile, chopper) =>
             {
                 var hitEvent = new GameplayEvents.ChopperHitBy(missile);
                 chopper.OnNotify(hitEvent);
-                _soundManager.OnNotify(hitEvent);
+                NotifyEvent(new GameplayEvents.ChopperHitBy());
                 missile.Destroy();
             });
             chopperCollisionDetector.DetectCollisions(_playerSprite, (chopper, player) =>
