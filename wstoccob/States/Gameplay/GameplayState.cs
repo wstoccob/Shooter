@@ -72,6 +72,8 @@ namespace wstoccob.States.Gameplay
             _soundManager.RegisterSound(new GameplayEvents.PlayerShootsMissile(), missileSound, 0.4f, -0.2f, 0.0f);
             var damageSound = LoadSound("damageSound");
             _soundManager.RegisterSound(new GameplayEvents.ChopperHitBy(), damageSound, 0.4f, -0.2f, 0.0f);
+            var explosionSound = LoadSound("explosionSound");
+            _soundManager.RegisterSound(new GameplayEvents.EnemyLostLife(), explosionSound, 0.4f, -0.2f, 0.0f);
             
             ResetGame();
         }
@@ -271,6 +273,7 @@ namespace wstoccob.States.Gameplay
                     {
                         AddExplosion(new Vector2(chopper.Position.X - 40, chopper.Position.Y - 40));
                         chopper.Destroy();
+                        NotifyEvent(new GameplayEvents.EnemyLostLife());
                     }
                     break;
             }

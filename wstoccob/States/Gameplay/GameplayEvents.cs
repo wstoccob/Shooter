@@ -30,6 +30,7 @@ namespace wstoccob.States.Gameplay
             {
                 CurrentLife = currentLife;
             }
+            public EnemyLostLife() { }
         }
     }
 }
